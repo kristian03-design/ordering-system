@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Bridge - Menu</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap" rel="stylesheet">
+
+  <script>
+    // Function to add items to cart
+    function addToCart(itemName, itemPrice) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      // Check if the item is already in the cart
+      const existingItemIndex = cart.findIndex(item => item.name === itemName);
+
+      if (existingItemIndex !== -1) {
+        // If item already exists, increase the quantity
+        cart[existingItemIndex].quantity += 1;
+      } else {
+        // If item doesn't exist, add new item with quantity 1
+        const newItem = {
+          name: itemName,
+          price: itemPrice,
+          quantity: 1
+        };
+        cart.push(newItem);
+      }
+
+      // Save the updated cart back to localStorage
+      localStorage.setItem('cart', JSON.stringify(cart));
+
+      // Show notification
+      showNotification(`${itemName} added to cart.`);
+
+      // Update the cart quantity displayed on the bag icon
+      updateCartQuantity();
+    }
+
+    // Function to show notification
+    function showNotification(message) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.style.display = 'block';
+
+      // Hide notification after 3 seconds
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+
+    // Function to update the quantity notification on the bag icon
+    function updateCartQuantity() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+      // Display the total quantity on the bag icon
+      const quantityBadge = document.getElementById('cart-quantity');
+      if (totalItems > 0) {
+        quantityBadge.style.display = 'block';
+        quantityBadge.textContent = totalItems;
+      } else {
+        quantityBadge.style.display = 'none';
+      }
+    }
+
+    // Update cart quantity on page load
+    window.onload = function () {
+      updateCartQuantity();
+    };
+  </script>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav>
+    <a href="index.html" class="logo">Food Bridge <b> Sizzling House </b>
+      <b> and </b><b> Grill </b></a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="menu.html" class="active">Menu</a></li>
+      <li><a href="ordertracker.html">Order Tracker</a></li>
+      <li><a href="location.html">Location</a></li>
+    </ul>
+    <div class="icons">
+      <a href="addtocart.html">
+        <img src="images/bag-icon.png" alt="Bag">
+        <span id="cart-quantity" class="cart-quantity" style="display: none;">0</span>
+      </a>
+      <a href="#"><img src="images/user.png" alt="User"></a>
+    </div>
+  </nav>
+
+  <!-- Notification element -->
+  <div id="notification"></div>
+
+  <div class="section">
+    <nav class="menu">
+      <a href="menu.html"><button>Silog Meal</button></a>
+      <a href="sizzling.html"><button class="active">Sizzling</button></a>
+      <a href="grilled.html"><button>Grilled</button></a>
+      <a href="drinks.html"><button>Drinks</button></a>
+    </nav>
+
+    <h1>Silog Meals</h1>
+    <div class="grid">
+      <div class="item">
+        <img src="images/SizzlingPorkSiSig.png" alt="Chick Silog">
+        <h2>Sizzling Pork Sisig</h2>
+        <span class="price">Php 75.00</span>
+        <button class="add-to-bag" onclick="addToCart('Sizzling Pork Sisig', 75.00)">Add to bag</button>
+      </div>
+      <div class="item">
+        <img src="images/SizzlingPorkTeriyaki.png" alt="Tapa Silog">
+        <h2>Sizzling Pork Teriyaki</h2>
+        <span class="price">Php 95.00</span>
+        <button class="add-to-bag" onclick="addToCart('Sizzling Pork Teriyaki', 95.00)">Add to bag</button>
+      </div>
+      <div class="item">
+        <img src="images/SizzlingPorkLiempo.png" alt="Hot Silog">
+        <h2>Sizzling Pork Liempo</h2>
+        <span class="price">Php 95.00</span>
+        <button class="add-to-bag" onclick="addToCart('Sizzling Pork Liempo', 95.00)">Add to bag</button>
+      </div>
+      <div class="item">
+        <img src="images/SizzlingBonelessbanguS.png" alt="Shanghai Silog">
+        <h2>Sizzling Boneless Bangus</h2>
+        <span class="price">Php 85.00</span>
+        <button class="add-to-bag" onclick="addToCart('Sizzling Boneless Bangus', 85.00)">Add to bag</button>
+      </div>
+      <div class="item">
+        <img src="images/Sizzling Chicken Teriyaki.png" alt="Longgadog Silog">
+        <h2>Sizzling Chicken Teriyaki</h2>
+        <span class="price">Php 65.00</span>
+        <button class="add-to-bag" onclick="addToCart('Sizzling Chicken Teriyaki', 65.00)">Add to bag</button>
+      </div>
+    </div>
+  </div>
+  <section>
+    <footer>
+      <p>&copy; 2024 Food Bridge Sizzling House and Grill. All Right Reserved.</p>
+    </footer>
+  </section>
+
+</body>
+
+</html>

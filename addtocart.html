@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Bridge - Cart</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap" rel="stylesheet">
+
+  <script>
+    // Function to load the cart from localStorage
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      const cartBody = document.getElementById('cart-body');
+      cartBody.innerHTML = ''; // Clear previous cart items
+
+      let subtotal = 0;
+
+      cart.forEach((item, index) => {
+        const totalItemPrice = item.price * item.quantity;
+        subtotal += totalItemPrice;
+
+        const row = `
+          <tr>
+            <td>${item.name}</td>
+            <td>
+              <button onclick="updateQuantity(${index}, -1)">-</button>
+              ${item.quantity}
+              <button onclick="updateQuantity(${index}, 1)">+</button>
+            </td>
+            <td>Php ${item.price}</td>
+            <td>Php ${totalItemPrice}</td>
+            <td><button onclick="removeItem(${index})">Remove</button></td>
+          </tr>
+        `;
+        cartBody.innerHTML += row;
+      });
+
+      document.getElementById('subtotal').innerText = `Subtotal: Php ${subtotal}`;
+      document.getElementById('total').innerText = `Total: Php ${subtotal}`;
+    }
+
+    // Function to update item quantity
+    function updateQuantity(index, change) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      if (cart[index].quantity + change > 0) {
+        cart[index].quantity += change;
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      loadCart();
+    }
+
+    // Function to remove item from cart
+    function removeItem(index) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.splice(index, 1); // Remove item from cart array
+      localStorage.setItem('cart', JSON.stringify(cart));
+      loadCart();
+    }
+
+    // Function to handle checkout
+    function checkout() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+
+      let receipt = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        receipt += `${item.name}: Php ${item.price} x ${item.quantity} = Php ${itemTotal}\n`;
+        total += itemTotal;
+      });
+
+      receipt += `\nTotal: Php ${total}\n\nThank you for your purchase!`;
+
+      alert(receipt);
+
+      // Clear cart after checkout
+      localStorage.removeItem('cart');
+      loadCart(); // Reload the cart display after clearing
+    }
+
+    // Load the cart when the page loads
+    window.onload = loadCart;
+  </script>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav>
+    <a href="index.html" class="logo">Food Bridge <b> Sizzling House </b>
+      <b> and </b><b> Grill </b></a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="menu.html">Menu</a></li>
+      <li><a href="ordertracker.html">Order Tracker</a></li>
+      <li><a href="location.html">Location</a></li>
+    </ul>
+    <div class="icons">
+      <a href="addtocart.html"><img src="images/bag-icon.png" alt="Bag"></a>
+      <a href="#"><img src="images/user.png" alt="User"></a>
+    </div>
+  </nav>
+
+  <div class="cart-container">
+    <h1>Your Cart</h1>
+    <div id="cart">
+      <table id="cart-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="cart-body">
+          <!-- Items will be added dynamically here -->
+        </tbody>
+      </table>
+      <div id="totals">
+        <p id="subtotal">Subtotal: Php 0</p>
+        <p id="total">Total: Php 0</p>
+      </div>
+      <button id="checkout-btn" onclick="checkout()">Checkout</button>
+    </div>
+  </div>
+
+  <section>
+    <footer>
+      <p>&copy; 2024 Food Bridge Sizzling House and Grill. All Right Reserved.</p>
+    </footer>
+  </section>
+</body>
+
+</html>
